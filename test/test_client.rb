@@ -236,7 +236,7 @@ class TestClient < MiniTest::Test
   def test_client_parse_mutation_document
     Temp.const_set :StarDocument, @client.parse(<<-'GRAPHQL')
       mutation StarRepo {
-        star(repositoryId: 12345, repositoryName: "fake ...fragment") {
+        star(repositoryId: 12345, repositoryName: "fake ...fragment and another\"...extremeFake") {
           repository {
             starCount
           }
@@ -246,7 +246,7 @@ class TestClient < MiniTest::Test
 
     query_string = <<-'GRAPHQL'.gsub(/^      /, "").chomp
       mutation TestClient__Temp__StarDocument__StarRepo {
-        star(repositoryId: 12345, repositoryName: "fake ...fragment") {
+        star(repositoryId: 12345, repositoryName: "fake ...fragment and another\"...extremeFake") {
           repository {
             starCount
           }

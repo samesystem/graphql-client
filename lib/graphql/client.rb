@@ -27,7 +27,7 @@ module GraphQL
     class NotImplementedError < Error; end
     class ValidationError < Error; end
 
-    FRAGMENT_PATTERN = /"(?:[^"])*"|(\.\.\.([a-zA-Z0-9_]+(::[a-zA-Z0-9_]+)*))/
+    FRAGMENT_PATTERN = /\\"|"(?:\\"|[^"])*"|(\.\.\.([a-zA-Z0-9_]+(::[a-zA-Z0-9_]+)*))/
 
     extend CollocatedEnforcement
 
