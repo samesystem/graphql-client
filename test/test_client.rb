@@ -73,6 +73,7 @@ class TestClient < MiniTest::Test
   class MutationType < GraphQL::Schema::Object
     field :star, StarResult, null: false do
       argument :repository_id, ID, required: true
+      argument :repository_name, String, required: false
     end
   end
 
@@ -235,7 +236,7 @@ class TestClient < MiniTest::Test
   def test_client_parse_mutation_document
     Temp.const_set :StarDocument, @client.parse(<<-'GRAPHQL')
       mutation StarRepo {
-        star(repositoryId: 12345) {
+        star(repositoryId: 12345, repositoryName: "fake ...fragment") {
           repository {
             starCount
           }
@@ -245,7 +246,7 @@ class TestClient < MiniTest::Test
 
     query_string = <<-'GRAPHQL'.gsub(/^      /, "").chomp
       mutation TestClient__Temp__StarDocument__StarRepo {
-        star(repositoryId: 12345) {
+        star(repositoryId: 12345, repositoryName: "fake ...fragment") {
           repository {
             starCount
           }
