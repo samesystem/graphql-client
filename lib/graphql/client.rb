@@ -27,6 +27,8 @@ module GraphQL
     class NotImplementedError < Error; end
     class ValidationError < Error; end
 
+    FRAGMENT_PATTERN = /"(?:[^"])*"|(\.\.\.([a-zA-Z0-9_]+(::[a-zA-Z0-9_]+)*))/
+
     extend CollocatedEnforcement
 
     attr_reader :schema, :execute
@@ -144,11 +146,13 @@ module GraphQL
       # Replace Ruby constant reference with GraphQL fragment names,
       # while populating `definition_dependencies` with
       # GraphQL Fragment ASTs which this operation depends on
-      str = str.gsub(/\.\.\.([a-zA-Z0-9_]+(::[a-zA-Z0-9_]+)*)/) do
+      str = str.gsub(FRAGMENT_PATTERN) do |match|
         match = Regexp.last_match
-        const_name = match[1]
+        const_name = match[2]
 
-        if str.match(/fragment\s*#{const_name}/)
+        if const_name.blank?
+          match[0]
+        elsif str.match(/fragment\s*#{const_name}/)
           # It's a fragment _definition_, not a fragment usage
           match[0]
         else
